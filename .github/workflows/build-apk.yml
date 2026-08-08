@@ -1,0 +1,36 @@
+name: Sert Adam Life APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Projeyi indir
+        uses: actions/checkout@v4
+
+      - name: Flutter kur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: ZIP'i aç
+        run: |
+          mkdir uygulama
+          unzip -q sert_adam_life_flutter.zip -d uygulama
+
+      - name: Paketleri yükle
+        working-directory: uygulama
+        run: flutter pub get
+
+      - name: APK oluştur
+        working-directory: uygulama
+        run: flutter build apk --release
+
+      - name: APK'yı hazırla
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sert-Adam-Life-APK
+          path: uygulama/build/app/outputs/flutter-apk/app-release.apk
